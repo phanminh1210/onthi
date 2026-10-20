@@ -1,47 +1,123 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import type { Question } from '../data/questions'
 
 const props = defineProps<{
   question: Question
   currentIndex: number
   totalQuestions: number
-  savedAnswer?: number
+  savedAnswer?: number | number[]
   isSubmitted: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'selectAnswer', answerIndex: number): void
+  (e: 'selectAnswer', answer: number | number[]): void
   (e: 'prev'): void
   (e: 'next'): void
   (e: 'submit'): void
 }>()
 
 const isEvaluating = ref(false)
-const selectedOpt = ref<number | undefined>(props.savedAnswer)
 
-watch(() => props.question.id, () => {
-  selectedOpt.value = props.savedAnswer
+// Trạng thái câu hỏi đã được làm / chốt đáp án chưa
+const isAnswered = computed(() => {
+  return props.savedAnswer !== undefined
+})
+
+// Quản lý các đáp án đang tick tạm thời cho câu hỏi nhiều lựa chọn (trước khi bấm Xác nhận)
+const tempMultipleSelected = ref<number[]>([])
+
+// Kiểm tra xem câu hỏi hiện tại có phải câu hỏi nhiều đáp án không
+const isMultipleChoice = computed(() => {
+  return Array.isArray(props.question.correctAnswer)
+})
+
+// Khi chuyển câu hỏi hoặc props thay đổi
+watch(() => [props.question.id, props.savedAnswer], () => {
   isEvaluating.value = false
-})
+  if (isMultipleChoice.value) {
+    if (Array.isArray(props.savedAnswer)) {
+      tempMultipleSelected.value = [...props.savedAnswer]
+    } else {
+      tempMultipleSelected.value = []
+    }
+  } else {
+    tempMultipleSelected.value = []
+  }
+}, { immediate: true })
 
-watch(() => props.savedAnswer, (newVal) => {
-  selectedOpt.value = newVal
-})
-
+// Xử lý khi click vào ô đáp án
 function handleChooseOption(index: number) {
-  if (props.isSubmitted || isEvaluating.value) return
+  // Nếu bài thi đã nộp, câu hỏi đã làm rồi, hoặc đang trong 0.5s chấm bài -> KHÔNG CHO TÁC ĐỘNG
+  if (props.isSubmitted || isAnswered.value || isEvaluating.value) return
 
-  selectedOpt.value = index
+  if (isMultipleChoice.value) {
+    // Câu hỏi nhiều lựa chọn: Tick / Bỏ tick tạm thời
+    const pos = tempMultipleSelected.value.indexOf(index)
+    if (pos > -1) {
+      tempMultipleSelected.value.splice(pos, 1)
+    } else {
+      tempMultipleSelected.value.push(index)
+    }
+  } else {
+    // Câu hỏi 1 đáp án: Chọn -> Bật hiệu ứng chấm 0.5s -> Lưu & Khóa
+    isEvaluating.value = true
+    setTimeout(() => {
+      isEvaluating.value = false
+      emit('selectAnswer', index)
+    }, 500)
+  }
+}
+
+// Xác nhận đáp án cho câu hỏi nhiều lựa chọn
+function handleConfirmMultiple() {
+  if (tempMultipleSelected.value.length === 0 || isAnswered.value || props.isSubmitted || isEvaluating.value) return
+
   isEvaluating.value = true
-
-  // Phát sự kiện chọn đáp án lên component cha (Home.vue)
-  emit('selectAnswer', index)
-
-  // Tắt trạng thái đang chấm sau 0.5s để người dùng kịp nhìn rõ đáp án Đúng/Sai
   setTimeout(() => {
     isEvaluating.value = false
+    emit('selectAnswer', [...tempMultipleSelected.value])
   }, 500)
+}
+
+// Kiểm tra option có đang được chọn không
+function isOptSelected(index: number): boolean {
+  if (isAnswered.value) {
+    if (Array.isArray(props.savedAnswer)) {
+      return props.savedAnswer.includes(index)
+    }
+    return props.savedAnswer === index
+  }
+
+  if (isMultipleChoice.value) {
+    return tempMultipleSelected.value.includes(index)
+  }
+
+  return false
+}
+
+// Lấy class để định dạng màu sắc (Đúng / Sai / Chọn)
+function getOptionClass(index: number) {
+  const isSelected = isOptSelected(index)
+
+  // Đã trả lời (hoặc đã nộp bài)
+  if (isAnswered.value || props.isSubmitted) {
+    const isCorrectOpt = isMultipleChoice.value
+      ? (props.question.correctAnswer as number[]).includes(index)
+      : props.question.correctAnswer === index
+
+    return {
+      'correct': isCorrectOpt,
+      'wrong': isSelected && !isCorrectOpt,
+      'disabled': true // Khóa hoàn toàn
+    }
+  }
+
+  // Chưa trả lời
+  return {
+    'selected': isSelected,
+    'disabled': isEvaluating.value
+  }
 }
 
 function getOptionKey(index: number): string {
@@ -52,8 +128,9 @@ function getOptionKey(index: number): string {
 <template>
   <div class="question-card" v-if="question">
     <div class="card-header">
-      <span class="question-tag">Câu hỏi {{ currentIndex + 1 }}</span>
-      <span v-if="isEvaluating" class="eval-status">⏳ Đang chấm bài...</span>
+      <div class="tags-group">
+        <span class="question-tag">Câu hỏi {{ currentIndex + 1 }}</span>
+      </div>
     </div>
 
     <h3 class="question-title">{{ question.content }}</h3>
@@ -63,17 +140,36 @@ function getOptionKey(index: number): string {
         v-for="(answer, idx) in question.answers"
         :key="idx"
         class="answer-item"
-        :class="{
-          'selected': selectedOpt === idx + 1 && !isEvaluating && !isSubmitted,
-          'correct': (isSubmitted || (selectedOpt !== undefined && !isEvaluating)) && (idx + 1 === question.correctAnswer),
-          'wrong': (isSubmitted || (selectedOpt !== undefined && !isEvaluating)) && (selectedOpt === idx + 1) && (selectedOpt !== question.correctAnswer),
-          'disabled': isSubmitted || isEvaluating
-        }"
+        :class="getOptionClass(idx + 1)"
         @click="handleChooseOption(idx + 1)"
       >
-        <div class="opt-key">{{ getOptionKey(idx) }}</div>
+        <div class="opt-key">
+          <template v-if="isMultipleChoice">
+            <input 
+              type="checkbox" 
+              :checked="isOptSelected(idx + 1)" 
+              :disabled="isAnswered || isSubmitted || isEvaluating"
+              @click.stop
+              @change="handleChooseOption(idx + 1)"
+            />
+          </template>
+          <template v-else>
+            {{ getOptionKey(idx) }}
+          </template>
+        </div>
         <div class="opt-text">{{ answer }}</div>
       </div>
+    </div>
+
+    <!-- Nút xác nhận cho câu hỏi nhiều đáp án (chỉ hiện khi CHƯA LÀM) -->
+    <div v-if="isMultipleChoice && !isAnswered && !isSubmitted" class="confirm-box">
+      <button 
+        class="btn btn-confirm" 
+        :disabled="tempMultipleSelected.length === 0 || isEvaluating"
+        @click="handleConfirmMultiple"
+      >
+        ✓ Xác nhận đáp án ({{ tempMultipleSelected.length }} đã chọn)
+      </button>
     </div>
 
     <div class="card-actions">
@@ -121,6 +217,13 @@ function getOptionKey(index: number): string {
   margin-bottom: 16px;
 }
 
+.tags-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .question-tag {
   background: #347bf0;
   color: #ffffff;
@@ -128,6 +231,24 @@ function getOptionKey(index: number): string {
   border-radius: 6px;
   font-size: 12px;
   font-weight: 700;
+}
+
+.type-tag {
+  background: #00ff7b;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.locked-tag {
+  background: #00ff7b;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .eval-status {
@@ -148,7 +269,7 @@ function getOptionKey(index: number): string {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .answer-item {
@@ -182,6 +303,12 @@ function getOptionKey(index: number): string {
   flex-shrink: 0;
 }
 
+.opt-key input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
 .opt-text {
   flex: 1;
   font-size: 15px;
@@ -199,9 +326,9 @@ function getOptionKey(index: number): string {
 }
 
 .answer-item.correct .opt-key {
-  background: #27ae60;
+  background: #0ea54d;
   color: #ffffff;
-  border-color: #27ae60;
+  border-color: #0ea54d;
 }
 
 .answer-item.wrong {
@@ -217,6 +344,33 @@ function getOptionKey(index: number): string {
 }
 
 .answer-item.disabled {
+  cursor: not-allowed;
+}
+
+.confirm-box {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-confirm {
+  background: #0ea54d;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-confirm:hover:not(:disabled) {
+  background: #005f2e;
+}
+
+.btn-confirm:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 

@@ -9,7 +9,7 @@ import ConfirmModal from '../components/ConfirmModal.vue'
 const questions = ref<Question[]>([])
 const isLoading = ref(true)
 const currentIndex = ref(0)
-const selectedAnswers = ref<Record<number, number>>({})
+const selectedAnswers = ref<Record<number, number | number[]>>({})
 const remainingSeconds = ref(60 * 60)
 const isSubmitted = ref(false)
 const showConfirmSubmit = ref(false)
@@ -22,13 +22,13 @@ const currentQuestion = computed<Question | null>(() => {
 
 const answeredCount = computed(() => Object.keys(selectedAnswers.value).length)
 
-function handleSelectAnswer(answerIndex: number) {
+function handleSelectAnswer(answer: number | number[]) {
   if (isSubmitted.value || !currentQuestion.value) return
 
   // 1. Lưu đáp án vừa chọn
-  selectedAnswers.value[currentQuestion.value.id] = answerIndex
+  selectedAnswers.value[currentQuestion.value.id] = answer
 
-  // 2. Tự động chuyển sang câu tiếp theo sau 1 giây (1000ms)
+  // 2. Tự động chuyển sang câu tiếp theo sau đúng 0.5 giây (500ms) khớp với thời gian hiển thị kết quả
   setTimeout(() => {
     if (currentIndex.value < questions.value.length - 1 && !isSubmitted.value) {
       currentIndex.value++

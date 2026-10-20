@@ -7,7 +7,7 @@ const props = defineProps<{
   answeredCount: number
   currentIndex: number
   remainingSeconds: number
-  selectedAnswers: Record<number, number>
+  selectedAnswers: Record<number, number | number[]>
   questions: Question[]
   isSubmitted: boolean
 }>()
@@ -23,25 +23,48 @@ const formattedTime = computed(() => {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 })
 
+// So sánh 2 mảng xem có trùng khớp hoàn toàn các phần tử không
+function areArraysEqual(a: number[], b: number[]): boolean {
+  if (a.length !== b.length) return false
+  const setA = new Set(a)
+  return b.every(val => setA.has(val))
+}
+
 // Kiểm tra trạng thái của từng câu hỏi
-function getQuestionStatusClass(n: number) {
-  const questionIndex = n - 1
-  const question = props.questions[questionIndex]
-  if (!question) return ''
-
+function getQuestionStatus(question: Question): 'unanswered' | 'correct' | 'wrong' {
   const userSelected = props.selectedAnswers[question.id]
+  if (userSelected === undefined) return 'unanswered'
 
-  // Chưa làm -> hiện màu trắng
-  if (userSelected === undefined) {
-    return 'unanswered'
-  }
-
-  // Đã làm -> So sánh đáp án vừa chọn với correctAnswer
-  if (userSelected === question.correctAnswer) {
-    return 'correct' // Đúng -> Xanh lá
+  let isCorrect = false
+  if (Array.isArray(question.correctAnswer)) {
+    if (Array.isArray(userSelected)) {
+      isCorrect = areArraysEqual(userSelected, question.correctAnswer)
+    }
   } else {
-    return 'wrong'   // Sai -> Đỏ
+    isCorrect = userSelected === question.correctAnswer
   }
+
+  return isCorrect ? 'correct' : 'wrong'
+}
+
+// Tính toán số câu đúng và số câu sai hiện tại
+const stats = computed(() => {
+  let correct = 0
+  let wrong = 0
+
+  props.questions.forEach(q => {
+    const status = getQuestionStatus(q)
+    if (status === 'correct') correct++
+    else if (status === 'wrong') wrong++
+  })
+
+  return { correct, wrong }
+})
+
+function getQuestionStatusClass(n: number) {
+  const question = props.questions[n - 1]
+  if (!question) return ''
+  return getQuestionStatus(question)
 }
 </script>
 
@@ -58,6 +81,16 @@ function getQuestionStatusClass(n: number) {
       <div class="grid-header">
         <h4>Danh sách câu hỏi</h4>
         <span class="progress-badge">{{ answeredCount }}/{{ total }}</span>
+      </div>
+
+      <!-- Thêm phần thống kê Số câu Đúng / Sai -->
+      <div class="stats-summary">
+        <div class="stat-item correct-stat">
+          <span>✅ Đúng: <strong>{{ stats.correct }}</strong></span>
+        </div>
+        <div class="stat-item wrong-stat">
+          <span>❌ Sai: <strong>{{ stats.wrong }}</strong></span>
+        </div>
       </div>
 
       <!-- Chú thích màu sắc -->
@@ -151,6 +184,35 @@ function getQuestionStatusClass(n: number) {
   font-weight: 700;
 }
 
+/* Giao diện khung thống kê Đúng / Sai */
+.stats-summary {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.stat-item {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  background: var(--opt-bg);
+}
+
+.correct-stat {
+  color: #27ae60;
+  border-color: rgba(39, 174, 96, 0.3);
+  background: rgba(39, 174, 96, 0.08);
+}
+
+.wrong-stat {
+  color: #eb5757;
+  border-color: rgba(235, 87, 87, 0.3);
+  background: rgba(235, 87, 87, 0.08);
+}
+
 /* Chú thích màu sắc */
 .color-legend {
   display: flex;
@@ -210,28 +272,24 @@ function getQuestionStatusClass(n: number) {
   transition: all 0.2s ease;
 }
 
-/* 1. Trạng thái Chưa làm -> Màu trắng */
 .grid-item.unanswered {
   background: #ffffff !important;
   color: #1e293b !important;
   border: 1px solid #cbd5e1 !important;
 }
 
-/* 2. Trạng thái Làm ĐÚNG -> Màu xanh lá */
 .grid-item.correct {
   background: #27ae60 !important;
   color: #ffffff !important;
   border: 1px solid #27ae60 !important;
 }
 
-/* 3. Trạng thái Làm SAI -> Màu đỏ */
 .grid-item.wrong {
   background: #eb5757 !important;
   color: #ffffff !important;
   border: 1px solid #eb5757 !important;
 }
 
-/* Câu đang chọn xem (Active border) */
 .grid-item.active {
   box-shadow: 0 0 0 3px #347bf0 !important;
   transform: scale(1.05);
