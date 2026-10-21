@@ -99,7 +99,10 @@ export const questionsData: Question[] = [
   {
     id: 16,
     content: "What is the advantage of polymorphism [tính đa hình] x?",
-    answers: ["The same programming logic can be applied to multiple related object types [Logic lập trình giống nhau có thể được áp dụng cho nhiều loại đối tượng liên quan] x. ", "Variables can be reused to save memory. ", "Constructing new objects from old objects of a similar type saves time. [Xây dựng các đối tượng mới từ các đối tượng cũ cùng loại giúp tiết kiệm thời gian.] x ", "Polymorphism is a dangerous aspect of heredity and should be avoided. [Đa hình là một khía cạnh nguy hiểm của di truyền và nên tránh.] x"],
+    answers: ["The same programming logic can be applied to multiple related object types [Logic lập trình giống nhau có thể được áp dụng cho nhiều loại đối tượng liên quan] x.
+", "Variables can be reused to save memory.
+", "Constructing new objects from old objects of a similar type saves time. [Xây dựng các đối tượng mới từ các đối tượng cũ cùng loại giúp tiết kiệm thời gian.] x
+", "Polymorphism is a dangerous aspect of heredity and should be avoided. [Đa hình là một khía cạnh nguy hiểm của di truyền và nên tránh.] x"],
     correctAnswer: 1
   },
   {
@@ -141,7 +144,10 @@ export const questionsData: Question[] = [
   {
     id: 23,
     content: "If the access modifier is missing in the definition of a class member (instance variable or method), does the member have …..?",
-    answers: ["default access. ", "public access. ", "private access. ", "universal access."],
+    answers: ["default access.
+", "public access.
+", "private access.
+", "universal access."],
     correctAnswer: 1
   },
   {
@@ -165,13 +171,18 @@ export const questionsData: Question[] = [
   {
     id: 27,
     content: "How many references can there be to a single object?",
-    answers: ["Just one. ", "Two. One from the caller and one from the called method ", "Three. The original reference and a reference for the formal and the current parameters. ", "There can be any number of references held in any number of variables and parameters (as long as they are of the correct type)."],
+    answers: ["Just one.
+", "Two. One from the caller and one from the called method
+", "Three. The original reference and a reference for the formal and the current parameters.
+", "There can be any number of references held in any number of variables and parameters (as long as they are of the correct type)."],
     correctAnswer: 4
   },
   {
     id: 28,
     content: "What does variable++ mean?",
-    answers: ["Add a one to the variable ", "Add a one to the variable after its current value is used ", "Add a one to the variable before using its current value ", "Double the value of the variable."],
+    answers: ["Add a one to the variable ", "Add a one to the variable after its current value is used
+", "Add a one to the variable before using its current value
+", "Double the value of the variable."],
     correctAnswer: 2
   },
   {
@@ -219,7 +230,10 @@ export const questionsData: Question[] = [
   {
     id: 36,
     content: "Which type of object determines where the GUI components are placed in a container?",
-    answers: ["The layer organizer. ", "The Component Manager. ", "The Frame Manager. ", "The layout manager."],
+    answers: ["The layer organizer.
+", "The Component Manager.
+", "The Frame Manager.
+", "The layout manager."],
     correctAnswer: 4
   },
   {
@@ -231,7 +245,9 @@ export const questionsData: Question[] = [
   {
     id: 38,
     content: "A process that involves recognizing and focusing on the important characteristics of a situation or object is known as:",
-    answers: ["Encapsulation", " Polymorphism ", " Abstraction ", " Inheritance ", " Object persistence."],
+    answers: ["Encapsulation", " Polymorphism
+", " Abstraction ", " Inheritance
+", " Object persistence."],
     correctAnswer: 3
   },
   {
@@ -267,7 +283,8 @@ export const questionsData: Question[] = [
   {
     id: 44,
     content: "The wrapping up of data and functions into a single unit is called",
-    answers: [" Encapsulation ", " Abstraction ", " Data Hiding ", " Polymorphism ", " Message passing."],
+    answers: [" Encapsulation ", " Abstraction
+", " Data Hiding ", " Polymorphism ", " Message passing."],
     correctAnswer: 1
   },
   {
@@ -296,8 +313,11 @@ export const questionsData: Question[] = [
   },
   {
     id: 49,
-    content: "The concept of multiple inheritances is implemented in Java by\nI. Extending two or more classes. II. Extending one class and implementing one or more interfaces. III. Implementing two or more interfaces.",
-    answers: [" Only (II) ", " (I) and (II) ", " (II) and (III) ", " Only (I) ", " Only (III)."],
+    content: "The concept of multiple inheritances is implemented in Java by\nI. Extending two or more classes.
+II. Extending one class and implementing one or more interfaces.
+III. Implementing two or more interfaces.",
+    answers: [" Only (II) ", " (I) and (II) ", " (II) and (III)
+", " Only (I) ", " Only (III)."],
     correctAnswer: 3
   },
   {
@@ -405,7 +425,9 @@ export const questionsData: Question[] = [
   {
     id: 67,
     content: "For what values respectively of the variables gender and age would the Java expression gender == 1 && age >= 65 become true?",
-    answers: [" gender = 1, age = 60 ", " gender = 1, age = 50 ", " gender = 1, age = 65 ", " gender = 0, age = 70 ", " gender = 0, age = 55."],
+    answers: [" gender = 1, age = 60 ", " gender = 1, age = 50
+", " gender = 1, age = 65 ", " gender = 0, age = 70
+", " gender = 0, age = 55."],
     correctAnswer: 3
   },
   {
@@ -686,7 +708,17 @@ export const questionsData: Question[] = [
   },
   {
     id: 114,
-    content: "public class Shape {     \nprotected void display() {         \nSystem.out.println(\"Display-base\");    \n }\n }  \npublic class Circle extends Shape {  \n<access-modifier> void display(){         \nSystem.out.println(\"Display-derived\");    \n } }\nWhat is the access-modifier suitable for display() method:\n",
+    content: "public class Shape {
+    \nprotected void display() {
+        \nSystem.out.println(\"Display-base\");
+   \n }\n
+}
+
+\npublic class Circle extends Shape {
+ \n<access-modifier> void display(){
+        \nSystem.out.println(\"Display-derived\");
+   \n }
+}\nWhat is the access-modifier suitable for display() method:\n",
     answers: ["Only protected can be used", "Public and protected both can be used", "Public, protected, and private can be used", "Only public can be used"],
     correctAnswer: 2
   },
@@ -698,31 +730,90 @@ export const questionsData: Question[] = [
   },
   {
     id: 116,
-    content: "interface Foo {     \ndefault void foo() { \nSystem.out.println(\"foo\"); \n} } \n@FunctionalInterface interface Bar extends Foo {     \n@Override abstract void foo(); \n} \nclass TestLambda {     \npublic static void main(String []args) {         \nBar bar = () -> System.out.println(\"qux\");         \nbar.foo();     \n} }\nWhat is the output of the program?",
+    content: "interface Foo {
+    \ndefault void foo() { \nSystem.out.println(\"foo\"); \n}
+}
+\n@FunctionalInterface
+interface Bar extends Foo {
+    \n@Override
+abstract void foo();
+\n}
+\nclass TestLambda {
+    \npublic static void main(String []args) {
+        \nBar bar = () -> System.out.println(\"qux\");
+        \nbar.foo();
+    \n}
+}\nWhat is the output of the program?",
     answers: ["This program results in a compiler error for Foo interface: cannot\noverride default method to be an abstract method\n", "This program results in a compiler error: Foo is not a functional\ninterface", "This program prints: foo", "This program prints: qux"],
     correctAnswer: 4
   },
   {
     id: 117,
-    content: "class ListTest {     \npublic static void main(String []args) {         \nList<int> intList = new ArrayList<>();         \nintList.add(100);         \nintList.add(200);         \nSystem.out.println(\"My list:\" + intList);     \n} }\n\nDetermine the behavior of this program:\n",
-    answers: ["It prints the following: My list: [200, 100] ", "A compiler error", " It prints the following: My list: [100, 200] ", "A runtime exception"],
+    content: "class ListTest {
+    \npublic static void main(String []args) {
+        \nList<int> intList = new ArrayList<>();
+        \nintList.add(100);
+        \nintList.add(200);
+        \nSystem.out.println(\"My list:\" + intList);
+    \n}
+}\n\nDetermine the behavior of this program:\n",
+    answers: ["It prints the following: My list: [200, 100]
+", "A compiler error", " It prints the following: My list: [100, 200]
+", "A runtime exception"],
     correctAnswer: 2
   },
   {
     id: 118,
-    content: "Choose the correct option based on this program:\nclass Test {    \nprivate static boolean removeCharacter(int character) {       \nswitch(character) {         \n case 'a': case 'e': case 'i': case 'o': case 'u': return true;      \n }       \nreturn false;    \n}    \npublic static void main(String []args) {      \n \"alexander\".chars()            \n .filter(Test::removeCharacter)             \n.forEach(ch -> System.out.printf(\"%c\", ch));    \n} }",
+    content: "Choose the correct option based on this program:\nclass Test {
+   \nprivate static boolean removeCharacter(int character) {
+      \nswitch(character) {
+        \n case 'a': case 'e': case 'i': case 'o': case 'u': return true;
+     \n }
+      \nreturn false;
+   \n}
+   \npublic static void main(String []args) {
+     \n \"alexander\".chars()
+           \n .filter(Test::removeCharacter)
+            \n.forEach(ch -> System.out.printf(\"%c\", ch));
+   \n}
+}",
     answers: ["This program results in a compiler error", "This program prints: \"aeae\"", "This program prints: \"lxndr\"", "This program prints: \"alexander\"", "This program crashes by throwing a java.lang.IllegalStateException", "This program crashes by throwing a java.util.IllegalFormatConversionException"],
     correctAnswer: 2
   },
   {
     id: 119,
-    content: "Consider the following program:\nclass TestException {    \npublic static void foo() {      \n try {         \n throw new ArrayIndexOutOfBoundsException();       \n} \ncatch(ArrayIndexOutOfBoundsException e) \n{          RuntimeException exception = new RuntimeException(e);          \nexception.initCause(e);          \nthrow exception;       \n}    \n}    \npublic static void main(String []args) {      \n try {          \nfoo();      \n } \ncatch(Exception e) {          \nSystem.out.println(e.getClass());       }   \n } }\nWhat is the output?",
+    content: "Consider the following program:\nclass TestException {
+   \npublic static void foo() {
+     \n try {
+        \n throw new ArrayIndexOutOfBoundsException();
+      \n} \ncatch(ArrayIndexOutOfBoundsException e) \n{
+         RuntimeException exception = new RuntimeException(e);
+         \nexception.initCause(e);
+         \nthrow exception;
+      \n}
+   \n}
+   \npublic static void main(String []args) {
+     \n try {
+         \nfoo();
+     \n } \ncatch(Exception e) {
+         \nSystem.out.println(e.getClass());
+      }
+  \n }
+}\nWhat is the output?",
     answers: ["class java.lang.RuntimeException\n", "class java.lang.Exception", " class java.lang.ArrayIndexOutOfBoundsException", "class java.lang.IllegalStateException"],
     correctAnswer: 4
   },
   {
     id: 120,
-    content: "public static void main(String []args) throws IOException {    \nDataInputStream dataInputStream = new DataInputStream(new FileInputStream(\"Input.csv\"));    \nBufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));    \nString line;   \n while ((line = bufferedReader.readLine()) != null) {       \nSystem.out.println(line);    \n}    \nbufferedReader.close(); }\nWhich options are true regarding this code segment?\n",
+    content: "public static void main(String []args) throws IOException {
+   \nDataInputStream dataInputStream = new DataInputStream(new FileInputStream(\"Input.csv\"));
+   \nBufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
+   \nString line;
+  \n while ((line = bufferedReader.readLine()) != null) {
+      \nSystem.out.println(line);
+   \n}
+   \nbufferedReader.close();
+}\nWhich options are true regarding this code segment?\n",
     answers: ["bufferedReader.close() statement will close only the BufferedReader object, and\nfindings and dataStream will remain unclosed.", "The bufferedReader.close() statement will close the BufferedReader object and the\nunderlying stream objects referred by findings and dataStream.", "The readLine() method invoked in the statement bufferedReader.readLine() can throw\nan IOException; if this exception is thrown, bufferedReader.close() will not be called,\nresulting in a resource leak.\n", "The readLine() method invoked in the statement bufferedReader.readLine() can throw\nan IOException; however, there will not be any resource leaks since Garbage\nCollector collects all resources.", "In this code segment, no exceptions can be thrown calling bufferedReader.close(), so\nthere is no possibility of resource leaks."],
     correctAnswer: [2, 3]
   },
@@ -758,13 +849,24 @@ export const questionsData: Question[] = [
   },
   {
     id: 126,
-    content: " What is the result of this code?\nConnection conn = DriverManager.getConnection(\"jdbc:foo:bar\"); Statement stmt = conn.createStatement(); int result = stmt.executeUpdate(\"UPDATE student SET number = number + 10\"); System.out.println(result);",
+    content: " What is the result of this code?\nConnection conn = DriverManager.getConnection(\"jdbc:foo:bar\");
+Statement stmt = conn.createStatement();
+int result = stmt.executeUpdate(\"UPDATE student SET number = number + 10\");
+System.out.println(result);",
     answers: ["0", "1", "table student’s row number", "The code does not compile.", "A SQLException is thrown", "A different exception is thrown"],
     correctAnswer: 6
   },
   {
     id: 127,
-    content: "What is the output of the following code?\ntry (Connection connection = DriverManager.getConnection(\"jdbc:foo:bar\");     Statement statement = connection.createStatement()) {    ResultSet resultSet = statement.executeQuery(\"SELECT COUNT(*) FROM Employee\");    int num = statement.executeUpdate(\"INSERT INTO Employee VALUES (3, 'John', 15)\");    resultSet.next();    System.out.println(resultSet.getInt(1)); } catch (Exception e) {    System.out.println(e.toString()); }\n",
+    content: "What is the output of the following code?\ntry (Connection connection = DriverManager.getConnection(\"jdbc:foo:bar\");
+    Statement statement = connection.createStatement()) {
+   ResultSet resultSet = statement.executeQuery(\"SELECT COUNT(*) FROM Employee\");
+   int num = statement.executeUpdate(\"INSERT INTO Employee VALUES (3, 'John', 15)\");
+   resultSet.next();
+   System.out.println(resultSet.getInt(1));
+} catch (Exception e) {
+   System.out.println(e.toString());
+}\n",
     answers: ["Employee’s row number", " Employee’s row number + 1", "The code does not compile.", "A SQLException is thrown.", "A different exception is thrown."],
     correctAnswer: 5
   },
@@ -1192,7 +1294,7 @@ export const questionsData: Question[] = [
     id: 198,
     content: "Which is nothing but a blueprint or a template for creating different objects which defines its properties and behaviours?",
     answers: ["An Array", "A class", "Interface", "None of the above"],
-    correctAnswer: 1
+    correctAnswer: 2
   },
   {
     id: 199,
